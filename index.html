@@ -754,7 +754,7 @@
     </div>
 
     <div class="container">
-        <h1>振袖館<br>アンケートフォーム
+        <h1>振袖館<br>予約フォーム
         </h1>
         <div class="label">お客様名<span class="required">必須</span></div>
         <input type="text" id="name" placeholder="お名前を入力してください" oninput="saveInput('name')">
@@ -805,11 +805,11 @@
 
         <div class="label">希望店舗<span class="required">必須</span></div>
         <div class="store-buttons">
-            <button type="button" id="onestore" onclick="selecthighschool(this)">那覇西町店</button>
-            <button type="button" id="twostore" onclick="selecthighschool(this)">西原店</button>
-            <button type="button" id="threestore" onclick="selecthighschool(this)">北谷店</button>
-            <button type="button" id="fourstore" onclick="selecthighschool(this)">うるま店</button>
-            <button type="button" id="fivestore" onclick="selecthighschool(this)">名護店</button>
+            <button type="button" id="onestore" onclick="selectstore(this)">那覇西町店</button>
+            <button type="button" id="twostore" onclick="selectstore(this)">西原店</button>
+            <button type="button" id="threestore" onclick="selectstore(this)">北谷店</button>
+            <button type="button" id="fourstore" onclick="selectstore(this)">うるま店</button>
+            <button type="button" id="fivestore" onclick="selectstore(this)">名護店</button>
         </div>
 
         <div class="label">電話番号<span class="required">必須</span></div>
@@ -933,34 +933,44 @@
         function updateDisplayInfo() {
             const name = document.getElementById('name').value;
             const inquiry = document.getElementById('inquiry').value;
-            const visitCountText = visitCount ? `・<span style="color:red;"><strong>ご来店回数</strong></span>：${visitCount}` : '・来店回数が未選択です';
-            const hopeCountText = hopeCount ? `・<span style="color:red;"><strong>ご来店回数</strong></span>：${hopeCount}` : '・来店回数が未選択です';
+            const age = document.getElementById('age').value;
+            const phone = document.getElementById('phone').value;
+            const visitCountText = visitCount ? `・<span style="color:#e95bbb;"><strong>性別</strong></span>：${visitCount}` : '・性別が未選択です';
+            const hopeCountText = hopeCount ? `・<span style="color:#e95bbb;"><strong>希望メニュー</strong></span>：${hopeCount}` : '・希望メニューが未選択です';
 
             // 第1希望日が選択された場合の表示
             const selectedDate1 = document.getElementById('date1').value;
             const selectedDate1Text = selectedDate1
-                ? `・<span style="color:red;"><strong>第1希望日</strong></span>：${formatDateTime(selectedDate1)}`
+                ? `・<span style="color:#e95bbb;"><strong>第1希望日</strong></span>：${formatDateTime(selectedDate1)}`
                 : '・第1希望日が未選択です';
 
             // 第2希望日が選択された場合の表示
             const selectedDate2 = document.getElementById('date2').value;
             const selectedDate2Text = selectedDate2
-                ? `・<span style="color:red;"><strong>第2希望日</strong></span>：${formatDateTime(selectedDate2)}`
+                ? `・<span style="color:#e95bbb;"><strong>第2希望日</strong></span>：${formatDateTime(selectedDate2)}`
                 : '・第2希望日が未選択です';
+
+            const storeCountText = storeCount ? `・<span style="color:#e95bbb;"><strong>希望店舗</strong></span>：${storeCount}` : '・希望店舗が未選択です';
 
             // displayInfo要素に情報を表示
             document.getElementById('displayInfo').innerHTML = `
-        <p>・<span style="color:red;"><strong>お名前</strong></span>：${name}</p>
+        <p>・<span style="color:#e95bbb;"><strong>お名前</strong></span>：${name}</p>
         <hr>
         <p>${visitCountText}</p>
         <hr>
-        <p>${hopeCountText}</p>
+        <p>・<span style="color:#e95bbb;"><strong>ご年齢</strong></span>：${age}</p>
         <hr>
-        <p>・<span style="color:red;"><strong>お名前</strong></span>：${inquiry}</p>
+        <p>・<span style="color:#e95bbb;"><strong>お問い合わせ内容</strong></span>：${inquiry}</p>
+        <hr>
+        <p>${hopeCountText}</p>
         <hr>
         <p>${selectedDate1Text}</p>
         <hr>
         <p>${selectedDate2Text}</p>
+        <hr>
+        <p>${storeCountText}</p>
+        <hr>
+        <p>・<span style="color:#e95bbb;"><strong>電話番号</strong></span>：${phone}</p>
         <hr>
     `;
         }
@@ -976,6 +986,30 @@
         // 各ボタンや入力フィールドでupdateDisplayInfoを呼び出すようにする
         document.getElementById('inquiry').addEventListener('input', updateDisplayInfo);
         document.querySelectorAll('.visit-buttons button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.getElementById('name').addEventListener('input', updateDisplayInfo);
+        document.querySelectorAll('.visit-buttons button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.getElementById('phone').addEventListener('input', updateDisplayInfo);
+        document.querySelectorAll('.visit-buttons button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.getElementById('age').addEventListener('input', updateDisplayInfo);
+        document.querySelectorAll('.visit-buttons button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.querySelectorAll('.menu-sections button').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.querySelectorAll('.store-buttons').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.querySelectorAll('.hope-buttons').forEach(button => {
+            button.addEventListener('click', updateDisplayInfo);
+        });
+        document.querySelectorAll('.irradiations button').forEach(button => {
             button.addEventListener('click', updateDisplayInfo);
         });
 
@@ -1174,7 +1208,7 @@
             fetchAvailability(currentDate);
         }
 
-        function selecthighschool(element) {
+        function selectstore(element) {
             // 選択された日時をリセット
             selectedFullDate = '';
 
@@ -1184,25 +1218,7 @@
             document.getElementById('fourstore').classList.remove('active');
             document.getElementById('fivestore').classList.remove('active');
             element.classList.add('active');
-            highschoolCount = element.innerText;
-
-            // 選択された訪問回数に対応する時間を取得
-            selectedhighschoolTime = highschoolTimes[highschoolCount];
-
-            console.log('選択された訪問回数の時間:', selectedhighschoolTime);
-
-            // カレンダーを更新するために取得する日付を渡す
-            fetchAvailability(currentDate);
-        }
-
-        function selectstore(element) {
-            // 選択された日時をリセット
-            selectedFullDate = '';
-
-            document.getElementById('firsthighschool').classList.remove('active');
-            document.getElementById('repeathighschool').classList.remove('active');
-            element.classList.add('active');
-            hstoreCount = element.innerText;
+            storeCount = element.innerText;
 
             // 選択された訪問回数に対応する時間を取得
             selectedstoreTime = storeTimes[storeCount];
@@ -1281,6 +1297,7 @@
                 age: document.getElementById('age').value.trim(),
                 inquiry: document.getElementById('inquiry').value.trim(),
                 visitCount: visitCount,
+                storeCount: storeCount,
                 hopeCount: hopeCount,
                 highschoolCount: highschoolCount,
                 dates: [
@@ -1329,7 +1346,7 @@
             // LINEトークにメッセージを送信
             liff.sendMessages([{
                 type: 'text',
-                text: `【予約フォーム】\nお名前：${formData.name}\n\n性別：${formData.visitCount}\n\nご年齢：${formData.age}\n\nお問い合わせ内容：${formData.inquiry}\n\n希望メニュー：${formData.visitCount}\n\n高校生以下ですか？：${formData.highschoolCount}\n\nメニュー：${formData.hopeCount}\n\n【希望日時】：\n・第一希望日\n${formatDate(formData.dates[0])}\n\n・第二希望日\n${formatDate(formData.dates[1])}\n\nメッセージ：${formData.message}\nお名前：${formData.phone}`
+                text: `【予約フォーム】\nお名前：${formData.name}\n\n性別：${formData.visitCount}\n\nご年齢：${formData.age}\n\nお問い合わせ内容：${formData.inquiry}\n\n希望メニュー：${formData.visitCount}\n\nメニュー：${formData.hopeCount}\n\n【希望日時】\n・第一希望日\n${formatDate(formData.dates[0])}\n\n・第二希望日\n${formatDate(formData.dates[1])}\n\nお名前：${formData.storeCount}\n\nお名前：${formData.phone}\n\nメッセージ：${formData.message}`
             }]).then(() => {
                 alert('当日キャンセルは無いようにお願いいたします。');
                 liff.closeWindow();
